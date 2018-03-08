@@ -34,6 +34,7 @@
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [backBtn setImage:[UIImage imageNamed:@"navigationButtonReturnClick_15x21_"] forState:UIControlStateNormal];
     [backBtn setTitle:@" 返回" forState:UIControlStateNormal];
+    [backBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     backBtn.titleLabel.font = [UIFont systemFontOfSize:16.5];
     [backBtn sizeToFit];
     backBtn.contentEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 0);

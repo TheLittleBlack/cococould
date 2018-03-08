@@ -57,87 +57,32 @@
     {
         case Home:
         {
-            baseURL = [NSString stringWithFormat:@"/shop/%@.htm",SMID]; //首页
+            baseURL = @"/index.htm"; //首页
         }
             break;
-        case Category:
+        case Community:
         {
-            baseURL = [NSString stringWithFormat:@"/shop/all_category.htm?smid=%@",SMID]; //分类
+            baseURL = @"/site/site_distribute.htm"; // 社区
         }
             break;
-        case Cart:
+        case Activity:
         {
-            baseURL = @"/cart/mycart.htm"; // 购物车
+            baseURL = @"/activities/activities_list.htm"; // 活动
+        }
+            break;
+        case Serve:
+        {
+            baseURL = @"/facilitator/facilitator_list.htm"; // 服务
         }
             break;
         case Mine:
         {
-            baseURL = @"/personal/home.htm"; // 我的
-        }
-            break;
-        case PaySuccess:
-        {
-            baseURL = @"/pay/success.htm?o="; // 支付成功   拼接上outTradeNo（交易单号）
-        }
-            break;
-        case PayFail:
-        {
-            baseURL = @"/pay/fail.htm?o="; // 支付失败   拼接上outTradeNo（交易单号）
-        }
-            break;
-        case BuySuccess:
-        {
-            baseURL = @"/scan_code_purchase/pay_success.htm"; // 扫码购成功
-        }
-            break;
-        case BuyFail:
-        {
-            baseURL = @"/scan_code_purchase/pay_defeat.htm"; // 扫码购失败
-        }
-            break;
-        case BuyCancel:
-        {
-            baseURL = @"/scan_code_purchase/pay_cancel.htm"; // 扫码购取消
-        }
-            break;
-        case EnterShopSuccess:
-        {
-            baseURL = @"/enter_the_store_pay/pay_success.htm"; // 进店购成功
-        }
-            break;
-        case EnterShopFail:
-        {
-            baseURL = @"/enter_the_store_pay/pay_defeat.htm"; // 进店购失败
-        }
-            break;
-        case EnterShopCancel:
-        {
-            baseURL = @"/enter_the_store_pay/pay_cancel.htm"; // 进店购取消
+            baseURL = @"/user/myProfile.htm"; // 我的
         }
             break;
         case WXLogin:
         {
-            baseURL = @"/wxlogin/login.htm?app_login_code="; // 微信登录
-        }
-            break;
-        case FindNearByShop:
-        {
-            baseURL = @"/nearby_shop/find_nearby_shop.htm"; // 附近门店列表
-        }
-            break;
-        case CallShop:
-        {
-            baseURL = @"/nearby_shop/push_information.htm"; // 呼叫门店
-        }
-            break;
-        case CancelCallShop:
-        {
-            baseURL = @"/nearby_shop/cancel_call_out.htm"; // 取消呼叫门店
-        }
-            break;
-        case ScanAddToCard:
-        {
-            baseURL = @"/scan_code_purchase/go_shopCar.htm?barCode=EAN,"; // 扫码加入购物车
+            baseURL = @"/loginCallback.htm?app_login_code="; // 微信登录
         }
             break;
             

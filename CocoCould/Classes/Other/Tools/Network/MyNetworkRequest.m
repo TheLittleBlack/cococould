@@ -11,22 +11,14 @@
 
 @implementation MyNetworkRequest
 
-
-
-
 +(void)postRequestWithUrl:(NSString *)urlString withPrameters:(NSDictionary *)dictionary result:(dataBlock)block error:(errorBlock)errorBlock withHUD:(BOOL)HUD
 {
-    
-    
-
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.requestSerializer = [AFHTTPRequestSerializer serializer];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
     
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json",@"text/html", nil];
-    
-    
     
     
     if(HUD)
@@ -65,8 +57,6 @@
 
     }
     
-    // 通过抓包发现并没有加这个东西？
-//    [mDictionary setValue:cookieValue forKey:@"MAYI_POS_GUIDE_API_SID"];
     
     NSString *code = [mDictionary getSignString];
     

@@ -7,7 +7,30 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <JavaScriptCore/JavaScriptCore.h>
 
-@interface BaseViewController : UIViewController
+@protocol TestJSExport <JSExport>
+
+-(void)wxLogin; // 微信登录
+-(void)loadPage:(NSDictionary *)dict; // 加载首页页面
+-(void)cleanCache; // 清楚缓存
+-(void)shared:(NSDictionary *)dict; // 分享
+-(void)checkVersion; // 检测新版本
+-(void)choosePicture:(NSString *)picUrl; // 打开app上传图片功能
+-(void)chooseCode:(NSDictionary *)dict; // 选择编码并关闭网页
+-(void)callPhone:(NSString *)phoneNumber; // 打电话
+-(void)saveFinancial:(NSString *)params; // 保存公司开票信息并关闭页面
+-(void)goMain; // 返回主页
+-(void)showLoading; // 加载loding
+
+@end
+
+@interface BaseViewController : UIViewController<UIWebViewDelegate,TestJSExport>
+
+@property(nonatomic,strong)UIWebView *webView;
+@property(nonatomic,copy)NSString *urlString;
+@property(nonatomic,strong)JSContext *context;
+
+
 
 @end

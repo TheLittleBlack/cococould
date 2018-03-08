@@ -17,18 +17,17 @@
 
 
 #if ConfigureServer == 0
-//#define MainURL @"http://Ls.suasong.com"
-#define MainURL @"http://test.m.mayi118.com"
+#define MainURL @"https://phone.cocospace.com.cn"
 #else
-#define MainURL @"http://m.hlwjd.cn"
+#define MainURL @"https://m.cocospace.com.cn"
 #endif
 
-#define SMID @"home_c6phlcqioh9p"                     // 店铺id
-#define URLSchemes @"mayiShopApp"                   // 修改这里的URLSchemes后，也要到plist去修改
-#define WXSecret @"53a8588091b2ed7608fdfdb353bec390" // 微信应用密钥AppSecret
-#define WXAPPID @"wxfe2e1687ec8a27af"                // 微信APPID
+
+#define WXSecret @"c7b43cd0fe638115098a8f0b44621d9b" // 微信应用密钥AppSecret
+#define WXAPPID @"wxb4abfca8464b8528"                // 微信APPID
 #define Salt @"c548ed61f9081da9d9"                   // code 的盐
 #define BuglyKey @"fbe30edee7"                      // 腾讯Bugly Key
+#define uMengKey @"5a9f5f25b27b0a6a2b000053"         // 友盟Key
 
 
 //-----------------------------------------------------------------------

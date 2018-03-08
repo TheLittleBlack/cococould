@@ -9,8 +9,7 @@
 #import "ScanQRCodeViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import "UIBarButtonItem+customItem.h"
-#import "ScanCodeBuyViewController.h"
-#import "ScanAddToCartViewController.h"
+#import "ScanCodeResultViewController.h"
 
 /**
  *  屏幕 高 宽 边界
@@ -55,7 +54,7 @@
     
     self.view.backgroundColor = [UIColor blackColor];
     
-    [self setBarButtonItem];
+//    [self setBarButtonItem];
     
 
     
@@ -206,10 +205,9 @@
         [_session addOutput:self.output];
     }
     
+    // 二维码
+    NSArray *typeArray = @[AVMetadataObjectTypeQRCode];
     
-    NSArray *typeArray = @[AVMetadataObjectTypeQRCode,// 二维码
-                           AVMetadataObjectTypeCode128Code, // 条形码
-                           ];
     // 类型
     [_output setMetadataObjectTypes:typeArray];
 
@@ -279,50 +277,35 @@
 -(void)dealQRString:(NSString *)QRString
 {
     
-    BOOL canAddToCart = [[NSUserDefaults standardUserDefaults] boolForKey:@"canAddToCart"];
-    
-    // 判断扫描结果  http://test.m.mayi118.com/scan_code_purchase/index/sc/100013
-    if([QRString containsString:@"http://"])
+    if([QRString containsString:@"cocospace.com.cn"])
     {
-
-        ScanCodeBuyViewController *SMGVC = [ScanCodeBuyViewController new];
-        SMGVC.urlString = QRString;
-        [self.navigationController pushViewController:SMGVC animated:YES];
-    
+        ScanCodeResultViewController *SCRVC = [ScanCodeResultViewController new];
+        SCRVC.urlString = QRString;
+        [self.navigationController pushViewController:SCRVC animated:YES];
     }
-    else if(canAddToCart)
+    else if([QRString containsString:@"http"])
     {
-        
-        ScanAddToCartViewController *SATC = [ScanAddToCartViewController new];
-        SATC.urlString = [NSString stringWithFormat:@"%@%@",[MayiURLManage MayiWebURLManageWithURL:ScanAddToCard],QRString];
-        [self.navigationController pushViewController:SATC animated:YES];
-        
-
+        ScanCodeResultViewController *SCRVC = [ScanCodeResultViewController new];
+        SCRVC.urlString = QRString;
+        [self.navigationController pushViewController:SCRVC animated:YES];
     }
     else
     {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"请先扫描门店二维码，进入门店购买商品！" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"已识别到二维码内容:%@",QRString] message:nil preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"好的" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
 
             dispatch_async(dispatch_get_main_queue(), ^{
-                
+
                 [_session startRunning];
                 timer = [NSTimer scheduledTimerWithTimeInterval:.02 target:self selector:@selector(animation1) userInfo:nil repeats:YES];
             });
-            
 
 
         }]];
         [self presentViewController:alert animated:YES completion:nil];
+        
     }
-    
-    
 
-    
-    
-
-    
-    
     
     
     

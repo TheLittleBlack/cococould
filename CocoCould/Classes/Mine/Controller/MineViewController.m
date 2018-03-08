@@ -16,22 +16,37 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    self.navigationItem.title = @"我的";
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WXLoginSuccess:) name:@"WXLoginSuccess" object:nil];
+    
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+-(void)WXLoginSuccess:(NSNotification *)notification
+{
+    
+    MyLog(@"登录授权成功，接下来获取access_token及用户信息");
+    NSString *code = notification.userInfo[@"info"];
+    
+    NSString *loginURL = [NSString stringWithFormat:@"%@%@",[MayiURLManage MayiWebURLManageWithURL:WXLogin],code];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:loginURL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:6];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.webView loadRequest:request];
+    });
+    
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    
 }
-*/
+
+
+
 
 @end
