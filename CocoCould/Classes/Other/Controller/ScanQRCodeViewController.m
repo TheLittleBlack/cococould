@@ -54,7 +54,7 @@
     
     self.view.backgroundColor = [UIColor blackColor];
     
-//    [self setBarButtonItem];
+    [self setBarButtonItem];
     
 
     
@@ -96,8 +96,8 @@
     
     upOrdown = NO;
     num =0;
-    _line = [[UIImageView alloc] initWithFrame:CGRectMake(LEFT, TOP+10, 220, 2)];
-    _line.image = [UIImage imageNamed:@"line.png"];
+    _line = [[UIImageView alloc] initWithFrame:CGRectMake(LEFT, TOP+20, 220, 2)];
+    _line.image = [UIImage imageNamed:@"scan_icon_scanline"];
     [self.view addSubview:_line];
     
     timer = [NSTimer scheduledTimerWithTimeInterval:.02 target:self selector:@selector(animation1) userInfo:nil repeats:YES];
@@ -121,14 +121,14 @@
 {
     if (upOrdown == NO) {
         num ++;
-        _line.frame = CGRectMake(LEFT, TOP+10+2*num, 220, 2);
+        _line.frame = CGRectMake(LEFT, TOP-50+2*num, 220, 2);
         if (2*num == 200) {
             upOrdown = YES;
         }
     }
     else {
         num --;
-        _line.frame = CGRectMake(LEFT, TOP+10+2*num, 220, 2);
+        _line.frame = CGRectMake(LEFT, TOP-50+2*num, 220, 2);
         if (num == 0) {
             upOrdown = NO;
         }

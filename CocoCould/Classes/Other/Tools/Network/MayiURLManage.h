@@ -12,8 +12,7 @@
 
 typedef NS_ENUM(NSUInteger,MayiURLType) {
     
-    AlipayUrl, // 获取支付宝订单信息
-    WXPay_Url, // 获取微信订单信息
+    checkUpdate, // 更新检测
     
 };
 
@@ -26,7 +25,7 @@ typedef NS_ENUM(NSUInteger,MayiWebUrlType) {
     Serve, // 服务
     Mine, // 我的
     WXLogin, // 微信登录
-    
+    WXLoginWithYM, // 微信登录联合友盟
 };
 
 +(NSString *)MayiURLManageWithURL:(MayiURLType)MayiUrlType;

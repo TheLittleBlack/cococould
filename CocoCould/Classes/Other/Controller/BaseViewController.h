@@ -17,11 +17,13 @@
 -(void)shared:(NSDictionary *)dict; // 分享
 -(void)checkVersion; // 检测新版本
 -(void)choosePicture:(NSString *)picUrl; // 打开app上传图片功能
--(void)chooseCode:(NSDictionary *)dict; // 选择编码并关闭网页
+-(void)chooseCode:(NSString *)code :(NSString *)name :(NSString *)type; // 选择编码并关闭网页
 -(void)callPhone:(NSString *)phoneNumber; // 打电话
 -(void)saveFinancial:(NSString *)params; // 保存公司开票信息并关闭页面
 -(void)goMain; // 返回主页
 -(void)showLoading; // 加载loding
+-(void)setObject:(NSDictionary *)object; // 选择一个对象
+-(void)getDeviceToken; // 获取友盟token
 
 @end
 

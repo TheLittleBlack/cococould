@@ -30,7 +30,9 @@
     MyLog(@"登录授权成功，接下来获取access_token及用户信息");
     NSString *code = notification.userInfo[@"info"];
     
-    NSString *loginURL = [NSString stringWithFormat:@"%@%@",[MayiURLManage MayiWebURLManageWithURL:WXLogin],code];
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"];
+    
+    NSString *loginURL = [NSString stringWithFormat:@"%@%@&deviceToken=%@",[MayiURLManage MayiWebURLManageWithURL:WXLogin],code,token];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:loginURL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:6];
     
     dispatch_async(dispatch_get_main_queue(), ^{

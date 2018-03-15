@@ -11,7 +11,7 @@
 
 // 配置环境    0 使用测试服务器     1 使用正式服务器
 
-#define ConfigureServer 1
+#define ConfigureServer 0
 
 
 
@@ -26,8 +26,10 @@
 #define WXSecret @"c7b43cd0fe638115098a8f0b44621d9b" // 微信应用密钥AppSecret
 #define WXAPPID @"wxb4abfca8464b8528"                // 微信APPID
 #define Salt @"c548ed61f9081da9d9"                   // code 的盐
-#define BuglyKey @"fbe30edee7"                      // 腾讯Bugly Key
-#define uMengKey @"5a9f5f25b27b0a6a2b000053"         // 友盟Key
+#define BuglyKey @""                      // 腾讯Bugly Key
+#define uMengKey @"5a9f5f25b27b0a6a2b000053"         // 友盟分享Key
+#define uMengPushKey @"5a9f5f25b27b0a6a2b000053"     // 友盟推送key
+#define uMengpushSecret @"fqrsewtg3lrm0u7nhfe7vxejb7chzzze"  // 友盟推送Secret
 
 
 //-----------------------------------------------------------------------
@@ -64,7 +66,7 @@ green:((float)((rgbValue & 0xFF00) >> 8))/255.0 \
 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 //主题颜色
-#define MainColor MyColorHex(0xe04749)
+#define MainColor MyColor(252,147,47,1)
 
 
 

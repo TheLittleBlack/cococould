@@ -19,19 +19,12 @@
     switch (MayiUrlType)
     {
 
-        case AlipayUrl:
+        case checkUpdate:
         {
-            baseURL = @"/api/pay/get_alipay_property.htm"; //获取支付宝订单信息
+            baseURL = @"/check_for_update.htm"; //更新检测
         }
             break;
-        case WXPay_Url:
-        {
-            baseURL = @"/api/pay/wx_place_order.htm"; //获取微信订单信息
-        }
-            break;
-            
-            
-
+        
     }
     
     // 判断环境    0 使用测试服务器     1 使用正式服务器
@@ -85,7 +78,6 @@
             baseURL = @"/loginCallback.htm?app_login_code="; // 微信登录
         }
             break;
-            
 
     }
     

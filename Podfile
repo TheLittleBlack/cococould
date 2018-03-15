@@ -11,4 +11,5 @@ pod 'WechatOpenSDK', '~> 1.8.0'
 pod 'BuglyHotfix'
 pod 'JSPatch'
 pod 'UMengUShare', '~> 6.4.6'
+pod 'UMessage_NOIDFA', '~> 1.5.3'
 end

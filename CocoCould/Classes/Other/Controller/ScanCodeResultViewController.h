@@ -6,6 +6,8 @@
 //  Copyright © 2018年 JayJay. All rights reserved.
 //
 
+// 二维码跳转页面
+
 #import "BaseViewController.h"
 
 @interface ScanCodeResultViewController : BaseViewController

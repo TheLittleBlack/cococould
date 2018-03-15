@@ -145,6 +145,7 @@ PODS:
     - UMengUShare/Core
   - UMengUShare/UI (6.4.6):
     - UMengUShare/Core
+  - UMessage_NOIDFA (1.5.3)
   - WechatOpenSDK (1.8.0)
 
 DEPENDENCIES:
@@ -158,6 +159,7 @@ DEPENDENCIES:
   - SDWebImage (~> 4.0.0-beta2)
   - SVProgressHUD (~> 2.1.2)
   - UMengUShare (~> 6.4.6)
+  - UMessage_NOIDFA (~> 1.5.3)
   - WechatOpenSDK (~> 1.8.0)
 
 SPEC CHECKSUMS:
@@ -171,8 +173,9 @@ SPEC CHECKSUMS:
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
   SVProgressHUD: c404a55d78acbeb7ebb78b76d3faf986475a6994
   UMengUShare: fdbbf86353976727af26a66e9a84314ecb59c816
+  UMessage_NOIDFA: 062d8440b387650535f9dc254449c86030246f3d
   WechatOpenSDK: 0ee07a8d492299d3e47372a33da5af26524a7576
 
-PODFILE CHECKSUM: 717739167571a62aa8a81dcd0d4bf0bbc8ed40f5
+PODFILE CHECKSUM: b1d7a22c687a8f955df0bf7d0073ffe9314ebe04
 
 COCOAPODS: 1.4.0
