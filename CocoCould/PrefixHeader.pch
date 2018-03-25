@@ -23,8 +23,8 @@
 #endif
 
 
-#define WXSecret @"c7b43cd0fe638115098a8f0b44621d9b" // 微信应用密钥AppSecret
-#define WXAPPID @"wxb4abfca8464b8528"                // 微信APPID
+#define WXSecret @"29a7488f21982c456e8107547a438a7b" // 微信应用密钥AppSecret
+#define WXAPPID @"wx2d135cf41adf5e6c"                // 微信APPID
 #define Salt @"c548ed61f9081da9d9"                   // code 的盐
 #define BuglyKey @""                      // 腾讯Bugly Key
 #define uMengKey @"5a9f5f25b27b0a6a2b000053"         // 友盟分享Key

@@ -34,7 +34,7 @@
     
     NSString *loginURL = [NSString stringWithFormat:@"%@%@&deviceToken=%@",[MayiURLManage MayiWebURLManageWithURL:WXLogin],code,token];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:loginURL] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:6];
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.webView loadRequest:request];
     });

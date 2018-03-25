@@ -38,7 +38,7 @@
     
     // 友盟分享 => 微信
     [[UMSocialManager defaultManager] setPlaform:UMSocialPlatformType_WechatSession appKey:WXAPPID appSecret:WXSecret redirectURL:@"http://mobile.umeng.com/social"];
-  
+    
     // 移除不需要显示的平台
     [[UMSocialManager defaultManager] removePlatformProviderWithPlatformType:UMSocialPlatformType_TencentWb];
     [[UMSocialManager defaultManager] removePlatformProviderWithPlatformType:UMSocialPlatformType_Sms];
@@ -53,6 +53,9 @@
     [[UMSocialManager defaultManager] removePlatformProviderWithPlatformType:UMSocialPlatformType_Linkedin];
     [[UMSocialManager defaultManager] removePlatformProviderWithPlatformType:UMSocialPlatformType_DropBox];
     [[UMSocialManager defaultManager] removePlatformProviderWithPlatformType:UMSocialPlatformType_VKontakte];
+
+    
+
     
     // 设置cookie
     [self setCookie];
@@ -64,6 +67,8 @@
     
     NSString *UserAgentString = [NSString stringWithFormat:@"{\"systemType\":\"iOS\",\"appVersion\":\"%@\",\"model\":\"model\",\"systemVersion\":\"%@\"}",appCurVersion,phoneVersion];
     MyLog(@"%@",UserAgentString);
+    
+    [MYManage defaultManager].version = appCurVersion;
     
     // 设置自定义 UserAgent 用于区分app调用H5  WebView会自动从NSUserDefaults中拿到UserAgent
     NSDictionary * dictionnary = [[NSDictionary alloc] initWithObjectsAndKeys:UserAgentString, @"UserAgent", nil];

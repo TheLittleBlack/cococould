@@ -7,34 +7,39 @@
 //
 
 #import "BaseViewController.h"
-#import "WYWebProgressLayer.h"
 #import "UIView+Frame.h"
-#import "WLWebProgressLayer.h"
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "WXApi.h"
-#import "LoadiPageViewController.h"
 #import <UMSocialCore/UMSocialCore.h>
 #import <UShareUI/UShareUI.h>
+#import "LoadiPageViewController.h"
+#import "WLWebProgressLayer.h"
+#import "ScanQRCodeViewController.h"
 
 @interface BaseViewController ()<UIWebViewDelegate,UITabBarControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
 {
-    WYWebProgressLayer *_progressLayer; ///< 网页加载进度条
+    BOOL _noRefresh;  // 上传图片后不需要重新请求
 }
 
-@property(nonatomic,strong)NSURLRequest *request;
+@property(nonatomic,strong)NSString *picUrl;
 
 @end
 
 @implementation BaseViewController
 
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     
-    if(self.request)
+    if(self.request && !_noRefresh)
     {
         [self.webView loadRequest:self.request];
+    }
+    else
+    {
+        _noRefresh = NO;
     }
     
 }
@@ -44,11 +49,6 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-//    UIBarButtonItem *scanButton = [[UIBarButtonItem alloc]initWithImage:[[UIImage imageNamed:@"icon_scan"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]  style:UIBarButtonItemStylePlain target:self action:@selector(scanButtonAction)];
-//    
-//    
-//    self.navigationItem.rightBarButtonItems = @[scanButton];
-    
     
     [self.view addSubview:self.webView];
     [self.webView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -57,10 +57,7 @@
         make.top.mas_equalTo(0);
         
     }];
-    
-    CGFloat ss = [self folderSize];
-    NSLog(@"%f",ss);
-    
+
     
 }
 
@@ -107,30 +104,26 @@
     [_progressLayer finishedLoad];
     
     self.context = [webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
-    
 
-    
-    NSString *sss = [NSString stringWithFormat:@"updateIndustry({'codeValueCode':'14','codeValueName':'医疗'})"];
-    [self.webView stringByEvaluatingJavaScriptFromString:sss];
-    
-
-    
-    
-    NSString *textJS = [NSString stringWithFormat:@"cacheAndVersion({'cache':'30M','version':'1.1.8'})"];
+    NSString *version = [MYManage defaultManager].version;
+    NSString *cache = [self folderSize];
+    NSString *textJS = [NSString stringWithFormat:@"appCallJs.cacheAndVersion({\"cache\":\"%@\",\"version\":\"%@\"})",cache,version];
     [self.context evaluateScript:textJS];
-    
-            NSString *jsStr = [NSString stringWithFormat:@"updateIndustry({'codeValueCode':'14','codeValueName':'医疗'})"]; [self.webView stringByEvaluatingJavaScriptFromString:jsStr];
+
+//    NSString *sss = [NSString stringWithFormat:@"appCallJs.updateIndustry(\"14\",\"医疗\",\"industry\")"];
+//    [self.context evaluateScript:sss];
+
+
     
 //    设置缓存值和版本号   cacheAndVersion（{"cache":"30M","version":"1.1.8"}）
 //    获取上传图片url     getPictrue（/test/2018/01/30/89c337bb54414df68b89d6e7129edb60.汽车.jpg,"headPortraitUrl"）
 //    获取编码对象        updateIndustry（{"codeValueCode":"14","codeValueName":"医疗"}）
 //    获取开票信息        getFinancial（{"id" : 1,"taxId" : "","billAddress" : "怒江北路","depositBank" : "招商","bankAccount" : "2131","tel" : "17621208540"）
 //    获取object对象     getObject（object）
-//    获取友盟token      getDeviceToken(token)
+//    获取友盟token      getDeviceToken(token) 
     
     // JS调用原生
     self.context[@"jsCallApp"] = self;
-    
     
     
 }
@@ -141,15 +134,6 @@
     NSURL *URL = request.URL;
     NSString *urlStr = [NSString stringWithFormat:@"%@",URL];
     NSLog(@"请求的URL：%@",urlStr);
-    
-//    if([urlStr containsString:@"choose_industry.htm"])
-//    {
-//        LoadiPageViewController *LPVC = [LoadiPageViewController new];
-//        LPVC.urlString = [NSString stringWithFormat:@"%@",urlStr];
-//        LPVC.hidesBottomBarWhenPushed = YES;
-//        [self.navigationController pushViewController:LPVC animated:YES];
-//        return NO;
-//    }
     
     return YES;
 }
@@ -176,25 +160,39 @@
 -(void)scanButtonAction
 {
     NSLog(@"扫一扫");
+    
+    ScanQRCodeViewController *SQVC = [ScanQRCodeViewController new];
+    SQVC.hidesBottomBarWhenPushed = YES;
+    [self.navigationController pushViewController:SQVC animated:YES];
 
 }
 
 
 -(void)loadPage:(NSDictionary *)dict  // 加载首页页面
 {
-    NSLog(@"%@",dict);
-    LoadiPageViewController *LPVC = [LoadiPageViewController new];
-    LPVC.urlString = [NSString stringWithFormat:@"%@%@",MainURL,dict[@"url"]];
-    LPVC.titleString = [NSString stringWithFormat:@"%@",dict[@"title"]];
-    LPVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:LPVC animated:YES];
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        NSLog(@"%@",dict);
+        LoadiPageViewController *LPVC = [LoadiPageViewController new];
+        LPVC.urlString = [NSString stringWithFormat:@"%@%@",MainURL,dict[@"url"]];
+        LPVC.titleString = [NSString stringWithFormat:@"%@",dict[@"title"]];
+        LPVC.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:LPVC animated:YES];
+        
+    });
+
+
 }
 
 -(void)cleanCache // 清除缓存
 {
     NSLog(@"清除缓存");
     [self removeCache];
+    
+    NSString *version = [MYManage defaultManager].version;
+    NSString *textJS = [NSString stringWithFormat:@"appCallJs.cacheAndVersion({\"cache\":\"0KB\",\"version\":\"%@\"})",version];
+    [self.context evaluateScript:textJS];
+    
 }
 -(void)shared:(NSDictionary *)dict // 分享
 {
@@ -266,7 +264,9 @@
 
 -(void)choosePicture:(NSString *)picUrl // 打开app上传图片功能
 {
-    NSLog(@"打开app上传图片功能");
+    NSLog(@"打开app上传图片功能,%@",picUrl);
+    
+    self.picUrl = picUrl;
 
     // 判断是否有权限
     if (![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum]) return;
@@ -281,22 +281,15 @@
 {
     NSLog(@"选择编码并关闭网页");
     
+    [MYManage defaultManager].code = code;
+    [MYManage defaultManager].name = name;
+    [MYManage defaultManager].type = type;
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         
         [self.navigationController popViewControllerAnimated:YES];
-
-        NSString *sss = [NSString stringWithFormat:@"updateIndustry({'codeValueCode':'14','codeValueName':'医疗'})"];
-        [self.webView stringByEvaluatingJavaScriptFromString:sss];
-        
-        NSString *textJS = [NSString stringWithFormat:@"updateIndustry({'codeValueCode':'14','codeValueName':'医疗'})"];
-        [self.context evaluateScript:textJS];
         
     });
-    
-    
-
-    
-//    updateIndustry（{"codeValueCode":"14","codeValueName":"医疗"}）
     
 }
 -(void)callPhone:(NSString *)phoneNumber // 打电话
@@ -320,6 +313,11 @@
 -(void)saveFinancial:(NSString *)params // 保存公司开票信息并关闭页面
 {
     NSLog(@"保存公司开票信息并关闭页面");
+    
+    NSString *jsString = [NSString stringWithFormat:@"appCallJs.getFinancial(\"%@\")",params];
+    [self.context evaluateScript:jsString];
+    
+    
 }
 -(void)goMain // 返回主页
 {
@@ -350,16 +348,35 @@
     }
 }
 
-// 选择一个对象
+// 选择一个对象 并关闭页面
 -(void)setObject:(NSDictionary *)object
 {
-    NSLog(@"%@",object);
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        NSLog(@"获取一个对象:%@",object);
+        
+        [MYManage defaultManager].getObject = object;
+        
+        [self.navigationController popViewControllerAnimated:YES];
+        
+    });
+    
+
+    
 }
 
 // 获取友盟token
 -(void)getDeviceToken
 {
+    
     NSLog(@"获取友盟token");
+    
+    NSString *deviceToken = [[NSUserDefaults standardUserDefaults] objectForKey:@"deviceToken"];
+    
+    NSString *updateIndustry = [NSString stringWithFormat:@"appCallJs.getDeviceToken(\"%@\")",deviceToken];
+    [self.context evaluateScript:updateIndustry];
+    
 }
 
 
@@ -463,7 +480,6 @@
 
 - (void)shareType:(NSInteger )type withInfo:(NSDictionary *)shareInfo{
     
-    
     /*
      创建网页内容对象
      根据不同需求设置不同分享内容，一般为图片，标题，描述，url
@@ -521,7 +537,7 @@
 }
 
 // 缓存大小
-- (CGFloat)folderSize{
+- (NSString *)folderSize{
     CGFloat folderSize = 0.0;
     NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask,YES)firstObject]; //获取所有文件的数组
     NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:cachePath];
@@ -535,7 +551,7 @@
     //转换为M为单位
     CGFloat sizeM = folderSize /1024.0/1024.0;
     
-    return sizeM;
+    return [NSString stringWithFormat:@"%.01fM",sizeM];
     
 }
 
@@ -642,14 +658,69 @@
 // 选择照片之后
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
-    //    ChaosLog(@"%@",info);
+  
+    _noRefresh = YES;
+    
     // 获取用户选择的图片
     UIImage *image = info[UIImagePickerControllerOriginalImage];
     
     // 退出imagePickerController
-    [self dismissViewControllerAnimated:YES completion:nil];
-  
+    
+    [self dismissViewControllerAnimated:YES completion:^{
+        
+        [Hud showUpload];
+        
+        
+        NSString *url = [MayiURLManage MayiURLManageWithURL:uploadImage];
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json",@"text/html", nil];
+        
+        //上传图片，只能用POST
+        [manager POST:url parameters:nil constructingBodyWithBlock:^(id  _Nonnull formData) {
+            
+            //将图片转成data
+            NSData *data = UIImageJPEGRepresentation(image,0.3);
+            //第一个代表文件转换后data数据，第二个代表图片的名字，第三个代表图片放入文件夹的名字，第四个代表文件的类型
+            [formData appendPartWithFileData:data name:@"file" fileName:@"jpeg" mimeType:@"image/jpeg"];
+            
+            
+        } progress:^(NSProgress * _Nonnull uploadProgress) {
+            MyLog(@"uploadProgress = %@",uploadProgress);
+        } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            
+            [Hud stop];
+            
+            
+            MyLog(@"%@",responseObject);
+            
+            if([responseObject[@"stateCode"] integerValue]==200)
+            {
+             
+                NSDictionary *data = responseObject[@"data"];
+                [Hud showText:@"上传成功"];
+
+
+                NSString *jsString = [NSString stringWithFormat:@"appCallJs.getPictrue(\"%@\",\"%@\")",data[@"remoteFileUrl"],self.picUrl];
+                [self.context evaluateScript:jsString];
+                
+                
+            }
+            
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            
+            
+            [Hud stop];
+            
+            [Hud showText:@"网络出错，请重新上传"];
+            
+            MyLog(@"error = %@",error);
+        }];
+        
+    }];
+    
 }
+
+
 
 
 

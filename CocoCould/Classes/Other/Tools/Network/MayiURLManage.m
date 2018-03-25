@@ -24,6 +24,11 @@
             baseURL = @"/check_for_update.htm"; //更新检测
         }
             break;
+        case uploadImage:
+        {
+            baseURL = @"/upload_file.htm"; // 上传图片
+        }
+            break;
         
     }
     

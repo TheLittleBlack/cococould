@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
+#import "WYWebProgressLayer.h"
 
 @protocol TestJSExport <JSExport>
 
@@ -29,10 +30,14 @@
 
 @interface BaseViewController : UIViewController<UIWebViewDelegate,TestJSExport>
 
+{
+    WYWebProgressLayer *_progressLayer; ///< 网页加载进度条
+}
+
 @property(nonatomic,strong)UIWebView *webView;
 @property(nonatomic,copy)NSString *urlString;
 @property(nonatomic,strong)JSContext *context;
-
+@property(nonatomic,strong)NSURLRequest *request;
 
 
 @end

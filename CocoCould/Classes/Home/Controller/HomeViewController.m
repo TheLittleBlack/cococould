@@ -8,6 +8,7 @@
 
 #import "HomeViewController.h"
 #import "ScanQRCodeViewController.h"
+#import "LoadiPageViewController.h"
 
 #define ADTime 3  //广告时间
 
@@ -46,7 +47,10 @@
     [self checkUpdate];
     
     
+    
+    
 }
+
 
 
 -(void)scanButtonAction

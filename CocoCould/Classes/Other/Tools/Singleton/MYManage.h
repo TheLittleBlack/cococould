@@ -29,8 +29,11 @@
 //// userInfo
 // @property(nonatomic,strong)NSString *address;
 
-@property(nonatomic,assign)NSInteger CurrentPaytype; // 记录最近的支付类型 目前有 0 商品支付、1 门店支付、2 扫码购支付
-
+@property(nonatomic,strong)NSString *code;
+@property(nonatomic,strong)NSString *name;
+@property(nonatomic,strong)NSString *type;
+@property(nonatomic,strong)NSString *version;
+@property(nonatomic,strong)NSDictionary *getObject;
 
 +(instancetype)defaultManager;
 

@@ -13,6 +13,7 @@
 typedef NS_ENUM(NSUInteger,MayiURLType) {
     
     checkUpdate, // 更新检测
+    uploadImage, // 上传图片
     
 };
 
