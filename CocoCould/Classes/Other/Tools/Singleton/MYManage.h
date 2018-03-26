@@ -34,6 +34,7 @@
 @property(nonatomic,strong)NSString *type;
 @property(nonatomic,strong)NSString *version;
 @property(nonatomic,strong)NSDictionary *getObject;
+@property(nonatomic,assign)BOOL homeRefresh;
 
 +(instancetype)defaultManager;
 

@@ -182,7 +182,17 @@
         
         if(compareResults==1)
         {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"更新提示" message:updateContent preferredStyle:UIAlertControllerStyleAlert];
+//            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"更新提示" message:updateContent preferredStyle:UIAlertControllerStyleAlert];
+            
+//            @"1.进场地订会议室；\n2.首页消息数；\n3.缓存优化；\n4.修复部分bug。"
+            
+            NSLog(@"%@",updateContent);
+            NSArray *array = [updateContent componentsSeparatedByString:@"\\n"];
+            NSString *targetString = @"";
+            for (NSString *subString in array) {
+                targetString = [NSString stringWithFormat:@"%@\n%@",targetString,subString];
+            }
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"更新提示" message:targetString preferredStyle:UIAlertControllerStyleAlert];
             
             [alert addAction:[UIAlertAction actionWithTitle:@"去更新" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 

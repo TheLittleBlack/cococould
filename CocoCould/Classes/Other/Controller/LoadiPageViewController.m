@@ -56,6 +56,18 @@
     NSString *urlStr = [NSString stringWithFormat:@"%@",URL];
     NSLog(@"请求的URL：%@",urlStr);
     
+    if([urlStr containsString:@"cocospace.com.cn/login"])
+    {
+        self.navigationItem.title = @"我的";
+    }
+    
+    
+    
+    if([urlStr containsString:@"open_agreement.htm"])
+    {
+        [MYManage defaultManager].homeRefresh = NO;
+    }
+    
     
     NSString *code = [MYManage defaultManager].code;
     NSString *name = [MYManage defaultManager].name;

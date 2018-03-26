@@ -7,6 +7,7 @@
 //
 
 #import "MineViewController.h"
+#import "UITabBar+ShowTip.h"
 
 @interface MineViewController ()
 
@@ -15,12 +16,13 @@
 @implementation MineViewController
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     
     self.navigationItem.title = @"我的";
     
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(WXLoginSuccess:) name:@"WXLoginSuccess" object:nil];
+
     
 }
 
@@ -47,6 +49,8 @@
     
     
 }
+
+
 
 
 

@@ -38,6 +38,7 @@
 @property(nonatomic,copy)NSString *urlString;
 @property(nonatomic,strong)JSContext *context;
 @property(nonatomic,strong)NSURLRequest *request;
+@property(nonatomic,assign)BOOL openMYRefresh; // 开启下拉刷新
 
 
 @end

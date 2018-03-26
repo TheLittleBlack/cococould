@@ -155,7 +155,7 @@ DEPENDENCIES:
   - Masonry (~> 1.0.2)
   - MBProgressHUD (~> 1.0.0)
   - MJExtension (~> 3.0.13)
-  - MJRefresh (~> 3.1.12)
+  - MJRefresh (~> 3.1.15)
   - SDWebImage (~> 4.0.0-beta2)
   - SVProgressHUD (~> 2.1.2)
   - UMengUShare (~> 6.4.6)
@@ -176,6 +176,6 @@ SPEC CHECKSUMS:
   UMessage_NOIDFA: 062d8440b387650535f9dc254449c86030246f3d
   WechatOpenSDK: 0ee07a8d492299d3e47372a33da5af26524a7576
 
-PODFILE CHECKSUM: b1d7a22c687a8f955df0bf7d0073ffe9314ebe04
+PODFILE CHECKSUM: 66fee1a36e5579a06f6044235521322484202838
 
 COCOAPODS: 1.4.0

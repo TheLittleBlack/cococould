@@ -145,7 +145,7 @@
 
 - (void)setCookie{
     
-    NSString *domain = [MainURL stringByReplacingOccurrencesOfString:@"https://"withString:@""];
+    NSString *domain = [MainURL stringByReplacingOccurrencesOfString:@"https://" withString:@""];
     
     NSMutableDictionary *cookieProperties = [NSMutableDictionary dictionary];
     [cookieProperties setObject:@"systemType" forKey:NSHTTPCookieName];
@@ -214,6 +214,9 @@
     else if (self.tabBarController.selectedIndex==4)
     {
       
+        // 清除角标
+        [[self.tabBarController.tabBar.items objectAtIndex:4] setBadgeValue:nil];
+        
         BaseViewController *mineVC = (BaseViewController *)[self topViewController];
         
         NSString *loginURL = [NSString stringWithFormat:@"%@",[MayiURLManage MayiWebURLManageWithURL:Mine]];
@@ -227,6 +230,13 @@
     
 }
 
+
+-(void)addBadge
+{
+    NSString *badgeValue = [self.tabBarController.tabBar.items objectAtIndex:4].badgeValue;
+    NSInteger badge = [badgeValue integerValue];
+    [[self.tabBarController.tabBar.items objectAtIndex:4] setBadgeValue:[NSString stringWithFormat:@"%ld",badge+1]];
+}
 
 
 //获取当前屏幕显示的viewcontroller
@@ -359,7 +369,8 @@
     if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
         //关闭对话框
         [UMessage setAutoAlert:NO];
-        //        [self goToMessageDetails:url];
+        
+        [self addBadge];
         
     }
     [UMessage didReceiveRemoteNotification:userInfo];
@@ -374,7 +385,8 @@
     if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
         //关闭对话框
         [UMessage setAutoAlert:NO];
-        //        [self goToMessageDetails:url];
+        
+        [self addBadge];
         
     }
     [UMessage didReceiveRemoteNotification:userInfo];
@@ -384,13 +396,15 @@
 //iOS10新增：处理前台收到通知的代理方法
 -(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler{
     
+    [self addBadge];
+    
     NSDictionary * userInfo = notification.request.content.userInfo;
     MyLog(@"%@",userInfo);
     
     NSString *url = userInfo[@"pathUrl"];
     MyLog(@"url:%@",url);
     
-    //    [self goToMessageDetails:url];
+
     
     if([notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
         
@@ -414,6 +428,9 @@
 //iOS10新增：处理后台点击通知的代理方法
 //iOS10以后接收的方法
 -(void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)())completionHandler{
+    
+    [self addBadge];
+    
     NSDictionary * userInfo = response.notification.request.content.userInfo;
     NSLog(@"后台括号外：userNotificationCenter:didReceiveNotificationResponse");
     if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
@@ -423,7 +440,7 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"userInfoNotification" object:self userInfo:userInfo];
         
         [UMessage didReceiveRemoteNotification:userInfo];
-        if([response.actionIdentifier isEqualToString:@"*****你定义的action id****"])
+        if([response.actionIdentifier isEqualToString:@"*****你定义的action id*****"])
         {
             
         }else

@@ -15,6 +15,7 @@
 #import "LoadiPageViewController.h"
 #import "WLWebProgressLayer.h"
 #import "ScanQRCodeViewController.h"
+#import <MJRefresh.h>
 
 @interface BaseViewController ()<UIWebViewDelegate,UITabBarControllerDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 
@@ -23,6 +24,8 @@
 }
 
 @property(nonatomic,strong)NSString *picUrl;
+@property(nonatomic,strong)NSString *lastUrlString;
+@property(nonatomic,strong)MBProgressHUD *hud;
 
 @end
 
@@ -33,22 +36,35 @@
 {
     [super viewWillAppear:animated];
     
-    if(self.request && !_noRefresh)
+    BOOL homeRefresh = [MYManage defaultManager].homeRefresh;
+    
+    if(self.request && !_noRefresh && homeRefresh)
     {
         [self.webView loadRequest:self.request];
     }
     else
     {
         _noRefresh = NO;
+        [MYManage defaultManager].homeRefresh = YES;
     }
     
+}
+
+-(instancetype)init
+{
+    
+    if(self = [super init])
+    {
+        self.openMYRefresh = YES; // 设置开启
+    }
+    
+    return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor whiteColor];
-    
     
     [self.view addSubview:self.webView];
     [self.webView mas_remakeConstraints:^(MASConstraintMaker *make) {
@@ -57,7 +73,8 @@
         make.top.mas_equalTo(0);
         
     }];
-
+    
+    
     
 }
 
@@ -70,6 +87,7 @@
         _webView.scalesPageToFit = YES;
         _webView.userInteractionEnabled = YES;
         _webView.delegate = self;
+        _webView.scrollView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(headerRefresh)];
         NSURL *url = [NSURL URLWithString:self.urlString];
         self.request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:6];
         [_webView loadRequest:self.request];
@@ -86,13 +104,12 @@
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
     [_progressLayer finishedLoad]; // 先结束掉上个请求的进度
-    
+    [Hud showLoading];
     NSLog(@"开始加载");
     
     _progressLayer = [WYWebProgressLayer layerWithFrame:CGRectMake(0, 0, ScreenWidth, 3)];
     [self.view.layer addSublayer:_progressLayer];
     [_progressLayer startLoad];
-    
     
 }
 
@@ -113,18 +130,20 @@
 //    NSString *sss = [NSString stringWithFormat:@"appCallJs.updateIndustry(\"14\",\"医疗\",\"industry\")"];
 //    [self.context evaluateScript:sss];
 
-
-    
 //    设置缓存值和版本号   cacheAndVersion（{"cache":"30M","version":"1.1.8"}）
 //    获取上传图片url     getPictrue（/test/2018/01/30/89c337bb54414df68b89d6e7129edb60.汽车.jpg,"headPortraitUrl"）
 //    获取编码对象        updateIndustry（{"codeValueCode":"14","codeValueName":"医疗"}）
 //    获取开票信息        getFinancial（{"id" : 1,"taxId" : "","billAddress" : "怒江北路","depositBank" : "招商","bankAccount" : "2131","tel" : "17621208540"）
 //    获取object对象     getObject（object）
-//    获取友盟token      getDeviceToken(token) 
+//    获取友盟token      getDeviceToken(token)
     
     // JS调用原生
     self.context[@"jsCallApp"] = self;
     
+    [self endRefresh];
+    
+    
+    [self logCookie];
     
 }
 
@@ -134,6 +153,7 @@
     NSURL *URL = request.URL;
     NSString *urlStr = [NSString stringWithFormat:@"%@",URL];
     NSLog(@"请求的URL：%@",urlStr);
+
     
     return YES;
 }
@@ -210,7 +230,6 @@
     // 检测更新
     [MyNetworkRequest postRequestWithUrl:[MayiURLManage MayiURLManageWithURL:checkUpdate] withPrameters:@{} result:^(id result) {
         
-        
         NSDictionary *dic = result[@"data"];
         //最新版本
         NSString *ver = [NSString stringWithFormat:@"%@",dic[@"lastVer"]];
@@ -225,9 +244,15 @@
         
         if(compareResults==1)
         {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"更新提示" message:updateContent preferredStyle:UIAlertControllerStyleAlert];
+            NSArray *array = [updateContent componentsSeparatedByString:@"\\n"];
+            NSString *targetString = @"";
+            for (NSString *subString in array) {
+                targetString = [NSString stringWithFormat:@"%@\n%@",targetString,subString];
+            }
             
-            [alert addAction:[UIAlertAction actionWithTitle:@"去更新" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"更新提示" message:targetString preferredStyle:UIAlertControllerStyleAlert];
+            
+                [alert addAction:[UIAlertAction actionWithTitle:@"去更新" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
                 
                 [self goToUpdatePagewith:dic[@"url"]];
                 
@@ -319,12 +344,17 @@
     
     
 }
+
 -(void)goMain // 返回主页
 {
     NSLog(@"返回主页");
     
     dispatch_async(dispatch_get_main_queue(), ^{
-         self.tabBarController.selectedIndex = 0;
+        
+        [self.navigationController popToRootViewControllerAnimated:YES];
+        
+        [self.webView loadRequest:self.request]; // 刷新当前页面 再跳到首页
+//         self.tabBarController.selectedIndex = 0;
     });
    
     
@@ -561,7 +591,7 @@
     //获取路径
     NSString*cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask,YES)objectAtIndex:0]; //返回路径中的文件数组
     NSArray*files = [[NSFileManager defaultManager]subpathsAtPath:cachePath];
-    NSLog(@"文件数：%ld",[files count]);
+    NSLog(@"文件数：%ld",(unsigned long)[files count]);
     for(NSString *p in files)
     {
         NSError*error; NSString*path = [cachePath stringByAppendingString:[NSString stringWithFormat:@"/%@",p]]; if([[NSFileManager defaultManager]fileExistsAtPath:path])
@@ -659,6 +689,13 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
   
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.hud.mode = MBProgressHUDModeIndeterminate;
+    self.hud.label.text = @"上传中...";
+    self.hud.label.font = [UIFont systemFontOfSize:15];
+    [self.hud showAnimated:YES];
+    [self.hud hideAnimated:YES afterDelay:20];
+    
     _noRefresh = YES;
     
     // 获取用户选择的图片
@@ -667,8 +704,6 @@
     // 退出imagePickerController
     
     [self dismissViewControllerAnimated:YES completion:^{
-        
-        [Hud showUpload];
         
         
         NSString *url = [MayiURLManage MayiURLManageWithURL:uploadImage];
@@ -688,8 +723,7 @@
             MyLog(@"uploadProgress = %@",uploadProgress);
         } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             
-            [Hud stop];
-            
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
             
             MyLog(@"%@",responseObject);
             
@@ -720,6 +754,48 @@
     
 }
 
+
+//点击取消
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [picker dismissViewControllerAnimated:YES completion:^{
+        
+        _noRefresh = YES;
+        
+    }];
+    
+}
+
+
+
+-(void)headerRefresh
+{
+
+    NSString *urlString = self.webView.request.URL.absoluteString;
+    
+    // 过滤掉不需要刷新的url
+    if([urlString containsString:@"bpView"]||[urlString containsString:@"activitiesSignUp"]||[urlString containsString:@"myCompany"]||[urlString containsString:@"myFinancia"]||[urlString containsString:@"setUp"]||[urlString containsString:@"updatePassword"]||[urlString containsString:@"updateMobilephone"]||[urlString containsString:@"aboutUs"]||[urlString containsString:@"opinionFeedback"]||[urlString containsString:@"repairInfo"]||[urlString containsString:@"newPassword"]||[urlString containsString:@"newMobilephone"]||[urlString containsString:@"login"]||[urlString containsString:@"userInfo"])
+    {
+        self.openMYRefresh = NO;
+    }
+    
+    if(!self.openMYRefresh)
+    {
+        [self endRefresh];
+        return;
+    }
+    
+    [self.webView loadRequest:self.request];
+    NSLog(@"下拉刷新");
+    
+    
+    
+}
+
+-(void)endRefresh
+{
+    [self.webView.scrollView.mj_header endRefreshing];
+}
 
 
 
